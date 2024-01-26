@@ -25,7 +25,7 @@ mkdir --parents $(dirname ${FILE_PATH})
 echo ${STR_TO_WRITE} > ${FILE_PATH}
 if [ $? -eq 0 ]
 then
-    # echo "File ${FILE_PATH} created"  
+    echo "File ${FILE_PATH} has been created"  
     exit 0
 else
     echo "File ${FILE_PATH} could not be created"
