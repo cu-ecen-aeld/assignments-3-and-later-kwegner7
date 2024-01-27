@@ -7,22 +7,39 @@ set -u
 
 NUMFILES=10
 WRITESTR=AELD_IS_FUN
-WRITEDIR=/tmp/aeld-data
+WRITEDIR=/tmp/aeld-data/results
 username=$(cat conf/username.txt)
 
-if [ $# -lt 3 ]
+if [ $# -eq 2 ]
 then
-	echo "Using default value ${WRITESTR} for string to write"
-	if [ $# -lt 1 ]
-	then
-		echo "Using default value ${NUMFILES} for number of files to write"
-	else
-		NUMFILES=$1
-	fi	
-else
-	NUMFILES=$1
-	WRITESTR=$2
-	WRITEDIR=/tmp/aeld-data/$3
+   echo "Using default value ${WRITEDIR}"
+   NUMFILES=$1
+   WRITESTR=$2
+fi
+
+if [ $# -eq 1 ]
+then
+   echo "Using default values ${WRITESTR} ${WRITEDIR}"
+   NUMFILES=$1
+fi
+
+if [ $# -eq 0 ]
+then
+   echo "Using default values ${NUMFILES} ${WRITESTR} ${WRITEDIR}"
+fi
+
+if [ $# -gt 2 ]
+then
+   NUMFILES=$1
+   WRITESTR=$2
+   WRITEDIR=/tmp/aeld-data/$3
+fi
+
+# removed in assignment 3
+if true # false for assignment 3
+then
+  make clean
+  make
 fi
 
 MATCHSTR="The number of files are ${NUMFILES} and the number of matching lines are ${NUMFILES}"
@@ -38,7 +55,8 @@ if [ $assignment != 'assignment1' ]
 then
 	mkdir -p "$WRITEDIR"
 
-	#The WRITEDIR is in quotes because if the directory path consists of spaces, then variable substitution will consider it as multiple argument.
+	#The WRITEDIR is in quotes because if the directory path consists of spaces, then variable substitution 
+	#will consider it as multiple argument.
 	#The quotes signify that the entire string in WRITEDIR is a single string.
 	#This issue can also be resolved by using double square brackets i.e [[ ]] instead of using quotes.
 	if [ -d "$WRITEDIR" ]
@@ -54,7 +72,17 @@ fi
 
 for i in $( seq 1 $NUMFILES)
 do
-	./writer.sh "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+  if [ $assignment = 'assignment1' ]
+  then
+    ./writer.sh "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+  fi
+  if [ $assignment = 'assignment2' ] || [ $assignment = 'assignment3' ]
+  then
+    ./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+    if [ $? -eq 1 ]; then
+	    exit 1
+    fi
+  fi
 done
 
 OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
