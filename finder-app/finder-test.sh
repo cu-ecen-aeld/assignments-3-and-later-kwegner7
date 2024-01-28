@@ -36,7 +36,7 @@ then
 fi
 
 # removed in assignment 3
-if true # false for assignment 3
+if false # false for assignment 3
 then
   make clean
   make
